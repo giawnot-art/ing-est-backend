@@ -2,6 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+/* STILE DI EMERGENZA PER DASHBOARD */
 body {
-  @apply bg-slate-50 text-slate-900;
+  background-color: #f8fafc !important;
+  font-family: sans-serif;
+  margin: 0;
 }
+
+/* Sidebar */
+aside {
+  background-color: #0f172a !important;
+  min-width: 260px;
+  color: white;
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* Card */
+.bg-white {
+  background-color: white !important;
+  border-radius: 1rem !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 1.5rem !important;
+  margin-bottom: 1rem !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+/* Bottoni */
+button {
+  cursor: pointer;
+  border-radius: 0.5rem !important;
+  padding: 0.6rem 1.2rem !important;
+  font-weight: bold !important;
+}
+
+.bg-blue-600 { background-color: #2563eb !important; color: white !important; border: none; }
+.bg-slate-900 { background-color: #0f172a !important; color: white !important; border: none; }
