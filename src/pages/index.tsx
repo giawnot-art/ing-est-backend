@@ -1,6 +1,27 @@
 import React from 'react';
 import Layout from '../components/layout';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
+import Layout from '../components/layout';
 import { MatchingCard } from '../components/matching-card';
+
+export default function Home() {
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchEngineers() {
+      // Qui interroghiamo la tabella che abbiamo creato insieme
+      const { data, error } = await supabase
+        .from('engineers') 
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (data) setMatches(data);
+      setLoading(false);
+    }
+    fetchEngineers();
+  }, []);
 
 export default function Home() {
   const demoMatches = [
