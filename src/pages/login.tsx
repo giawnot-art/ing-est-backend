@@ -1,132 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useRouter } from 'next/router';
 
-export default function AuthPage() {
-  const [isRegistering, setIsRegistering] = useState(false);
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [catalogo, setCatalogo] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const router = useRouter();
 
-  // Carica i servizi per la registrazione
-  useEffect(() => {
-    async function getServices() {
-      const { data } = await supabase.from('servizi').select('nome');
-      if (data) setCatalogo(data.map(s => s.nome));
-    }
-    getServices();
-  }, []);
-
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setErrorMsg('');
 
-    if (isRegistering) {
-      // 1. Registrazione Utente
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-      if (authError) {
-        setError(authError.message);
-      } else if (authData.user) {
-        // 2. Creazione Profilo con Tag
-        const { error: profileError } = await supabase.from('profiles').upsert({
-          id: authData.user.id,
-          full_name: fullName,
-          specialization: selectedTags,
-          updated_at: new Date(),
-        });
-        if (profileError) setError(profileError.message);
-        else router.push('/');
+    if (error) {
+      if (error.message.includes("Invalid login credentials")) {
+        setErrorMsg("Credenziali errate. Se non hai un account, registrati!");
+      } else {
+        setErrorMsg(error.message);
       }
     } else {
-      // Login semplice
-      const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
-      if (loginError) setError(loginError.message);
-      else router.push('/');
+      router.push('/');
     }
     setLoading(false);
   };
 
-  const toggleTag = (tag: string) => {
-    setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
+  const handleReset = async () => {
+    if (!email) return setErrorMsg("Inserisci l'email per il reset");
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) setErrorMsg(error.message);
+    else alert("Controlla l'email per resettare la password");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12">
-      <div className="max-w-xl w-full bg-white p-8 md:p-12 rounded-[3rem] shadow-2xl border border-slate-100">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-black text-slate-900 tracking-tight">ING-EST</h1>
-          <p className="text-slate-500 mt-2 font-medium">
-            {isRegistering ? 'Crea il tuo profilo professionale' : 'Bentornato nella rete'}
-          </p>
-        </div>
-
-        <form onSubmit={handleAuth} className="space-y-5">
-          {isRegistering && (
-            <input 
-              type="text" placeholder="Nome Completo / Studio" required
-              className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          )}
-          
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+      <div className="max-w-md w-full bg-white p-8 rounded-3xl shadow-xl">
+        <h2 className="text-3xl font-black mb-6 text-slate-900">Accedi</h2>
+        
+        <form onSubmit={handleLogin} className="space-y-4">
           <input 
-            type="email" placeholder="Email" required
-            className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            onChange={(e) => setEmail(e.target.value)}
+            type="email" placeholder="Email" className="w-full p-4 rounded-xl border"
+            onChange={(e) => setEmail(e.target.value)} required
+          />
+          <input 
+            type="password" placeholder="Password" className="w-full p-4 rounded-xl border"
+            onChange={(e) => setPassword(e.target.value)} required
           />
           
-          <input 
-            type="password" placeholder="Password (min. 6 caratteri)" required
-            className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none transition-all"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          {isRegistering && (
-            <div className="pt-4">
-              <p className="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">Seleziona le tue competenze:</p>
-              <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 border border-slate-100 rounded-xl">
-                {catalogo.map(tag => (
-                  <button
-                    key={tag} type="button" onClick={() => toggleTag(tag)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                      selectedTags.includes(tag) ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <button 
-            type="submit" disabled={loading}
-            className="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-lg hover:bg-blue-600 transition-all shadow-lg active:scale-95 disabled:opacity-50"
-          >
-            {loading ? 'Elaborazione...' : (isRegistering ? 'Registrati e Inizia' : 'Accedi')}
+          <button disabled={loading} className="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">
+            {loading ? 'Entrando...' : 'Accedi'}
           </button>
         </form>
 
-        <div className="mt-8 text-center">
-          <button 
-            onClick={() => setIsRegistering(!isRegistering)}
-            className="text-blue-600 font-bold hover:underline"
-          >
-            {isRegistering ? 'Hai già un account? Accedi' : 'Non hai un account? Registrati ora'}
-          </button>
+        <div className="mt-6 flex flex-col gap-2 text-sm font-medium">
+          <button onClick={() => router.push('/signup')} className="text-blue-600">Non hai un account? Registrati</button>
+          <button onClick={handleReset} className="text-slate-400">Dimenticata la password?</button>
         </div>
 
-        {error && <p className="mt-6 text-center text-red-500 bg-red-50 p-4 rounded-xl font-bold text-sm">{error}</p>}
+        {errorMsg && <div className="mt-4 p-3 bg-red-50 text-red-600 rounded-lg text-xs font-bold">{errorMsg}</div>}
       </div>
     </div>
   );
