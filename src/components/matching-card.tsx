@@ -7,7 +7,7 @@ export const MatchingCard = ({ name, score, aiInsight, experience, software }: a
         <div className="flex justify-between items-start mb-6">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 border border-slate-200">
-              {name.charAt(0)}
+              {name ? name.charAt(0) : 'U'}
             </div>
             <div>
               <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{name}</h3>
