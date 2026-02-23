@@ -9,22 +9,19 @@ export default function Home() {
   ];
 
   return (
-    /* Questo stile inline FORZA lo sfondo blu e il testo bianco anche se Tailwind è rotto */
-    <div style={{ backgroundColor: '#1e40af', minHeight: '100vh', color: 'white' }}>
-      <Layout>
-        <div className="max-w-6xl mx-auto" style={{ padding: '40px' }}>
-          <header className="mb-10 text-center md:text-left">
-            <h1 className="text-4xl font-extrabold tracking-tight">Dashboard Matching</h1>
-            <p className="mt-2 font-medium">Progetto: Calcolo Villa Unifamiliare (ID: 001)</p>
-          </header>
+    <Layout>
+      <div className="max-w-6xl mx-auto">
+        <header className="mb-10 text-center md:text-left">
+          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Dashboard Matching</h1>
+          <p className="text-slate-500 mt-2 font-medium">Progetto: Calcolo Villa Unifamiliare (ID: 001)</p>
+        </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-            {demoMatches.map((m, idx) => (
-              <MatchingCard key={idx} {...m} />
-            ))}
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {demoMatches.map((m, idx) => (
+            <MatchingCard key={idx} {...m} />
+          ))}
         </div>
-      </Layout>
-    </div>
+      </div>
+    </Layout>
   );
 }
