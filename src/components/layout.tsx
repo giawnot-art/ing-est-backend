@@ -12,14 +12,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <nav className="flex-1 px-4 space-y-2 mt-4">
           <a href="#" className="block px-4 py-2 rounded-lg bg-slate-800 text-white font-medium">Dashboard</a>
           <a href="#" className="block px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">Progetti</a>
-          <a href="#" className="block px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">Matching AI</a>
-          <a href="#" className="block px-4 py-2 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors">Impostazioni</a>
-        </nav>
-        <div className="p-4 border-t border-slate-800">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center font-bold text-xs">SA</div>
-            <div className="text-sm font-medium">Studio Alpha</div>
-          </div>
         </div>
       </aside>
 
@@ -27,11 +19,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8">
           <h2 className="text-lg font-semibold text-slate-800">Area Operativa</h2>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-            Nuovo Progetto
-          </button>
         </header>
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-8 bg-slate-50">
           {children}
         </div>
       </main>
