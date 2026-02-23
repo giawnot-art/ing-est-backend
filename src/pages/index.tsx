@@ -9,28 +9,22 @@ export default function Home() {
   ];
 
   return (
-    <Layout>
-      <div className="max-w-6xl mx-auto">
-        <header className="mb-10 text-center md:text-left">
-          <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">Dashboard Matching</h1>
-          <p className="text-slate-500 mt-2 font-medium">Progetto: Calcolo Villa Unifamiliare (ID: 001)</p>
-        </header>
+    /* Questo stile inline FORZA lo sfondo blu e il testo bianco anche se Tailwind è rotto */
+    <div style={{ backgroundColor: '#1e40af', minHeight: '100vh', color: 'white' }}>
+      <Layout>
+        <div className="max-w-6xl mx-auto" style={{ padding: '40px' }}>
+          <header className="mb-10 text-center md:text-left">
+            <h1 className="text-4xl font-extrabold tracking-tight">Dashboard Matching</h1>
+            <p className="mt-2 font-medium">Progetto: Calcolo Villa Unifamiliare (ID: 001)</p>
+          </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {demoMatches.map((m, idx) => (
-            <MatchingCard key={idx} {...m} />
-          ))}
-        </div>
-
-        <div className="mt-16 pt-16 border-t border-slate-200">
-          <h2 className="text-xl font-bold text-slate-900 mb-8">Test Onboarding (Vista Professionista)</h2>
-          {/* Mostriamo il form di onboarding qui per testarlo subito */}
-          <div className="bg-slate-100 p-8 rounded-3xl">
-            {/* Si può importare OnboardingForm qui */}
-            <p className="text-center text-slate-400 italic">Area di configurazione profilo ingegnere</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+            {demoMatches.map((m, idx) => (
+              <MatchingCard key={idx} {...m} />
+            ))}
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </div>
   );
 }
