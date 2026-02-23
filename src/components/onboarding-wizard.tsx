@@ -9,11 +9,9 @@ export const OnboardingWizard = ({ user, onComplete }: any) => {
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
 
-  // Recupera i servizi dal database all'avvio
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        // Sostituisci 'servizi' con il nome della tua tabella e 'nome' con la colonna
         const { data, error } = await supabase
           .from('servizi') 
           .select('nome')
@@ -77,4 +75,70 @@ export const OnboardingWizard = ({ user, onComplete }: any) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button 
               onClick={() => { setRole('engineer'); setStep(2); }}
-              className="group p-8 border-2 border-slate-10
+              className="group p-8 border-2 border-slate-100 rounded-3xl hover:border-blue-500 hover:bg-blue-50/50 transition-all text-left relative overflow-hidden"
+            >
+              <div className="text-4xl mb-4">🏗️</div>
+              <div className="font-bold text-xl text-slate-900">Professionista</div>
+              <div className="text-sm text-slate-500 mt-1">Ingegnere, Architetto o Tecnico</div>
+              <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 font-bold">→</div>
+            </button>
+            <button 
+              onClick={() => { setRole('studio'); setStep(2); }}
+              className="group p-8 border-2 border-slate-100 rounded-3xl hover:border-blue-500 hover:bg-blue-50/50 transition-all text-left relative overflow-hidden"
+            >
+              <div className="text-4xl mb-4">🏢</div>
+              <div className="font-bold text-xl text-slate-900">Studio Tecnico</div>
+              <div className="text-sm text-slate-500 mt-1">Società o Studio Associato</div>
+              <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 font-bold">→</div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === 2 && (
+        <div className="space-y-8">
+          <div>
+            <h2 className="text-3xl font-black text-slate-900 mb-2">Catalogo Servizi</h2>
+            <p className="text-slate-500 font-medium">Seleziona le tue aree di competenza per il matching.</p>
+          </div>
+
+          {fetchingServices ? (
+            <div className="py-10 text-center text-slate-400 animate-pulse">Caricamento catalogo...</div>
+          ) : (
+            <div className="flex flex-wrap gap-2.5">
+              {serviziDatabase.map(tag => (
+                <button
+                  key={tag}
+                  onClick={() => toggleTag(tag)}
+                  className={`px-5 py-2.5 rounded-2xl border text-sm font-bold transition-all ${
+                    selectedTags.includes(tag) 
+                    ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-200 scale-105' 
+                    : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-slate-50'
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center gap-4 pt-6">
+            <button 
+              onClick={() => setStep(1)} 
+              className="px-6 py-4 font-bold text-slate-400 hover:text-slate-600 transition-colors"
+            >
+              Indietro
+            </button>
+            <button 
+              onClick={handleSave}
+              disabled={loading || selectedTags.length === 0}
+              className="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold text-lg hover:bg-blue-600 disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-slate-200 transition-all active:scale-95"
+            >
+              {loading ? 'Salvataggio...' : 'Attiva Profilo'}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
